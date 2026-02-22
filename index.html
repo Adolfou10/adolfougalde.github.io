@@ -5,9 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Soporte Técnico de Computadoras en Cochabamba. Mantenimiento, reparación y optimización de PCs. Adolfo Ugalde Rojas - Técnico Certificado IT Essentials">
     <meta name="keywords" content="soporte técnico, computadoras, Cochabamba, Bolivia, mantenimiento PC, formateo, virus">
+    <meta name="author" content="Adolfo Ugalde Rojas">
     <title>Soporte Técnico PC | Adolfo Ugalde Rojas - Cochabamba</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <style>
         :root {
             --primary-blue: #2563eb;
@@ -15,6 +22,7 @@
             --light-blue: #eff6ff;
             --accent-green: #10b981;
             --accent-green-dark: #059669;
+            --accent-orange: #f59e0b;
             --dark-gray: #1f2937;
             --medium-gray: #6b7280;
             --light-gray: #f9fafb;
@@ -23,725 +31,312 @@
             --shadow-hover: 0 20px 40px rgba(0,0,0,0.15);
         }
 
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
-        body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-            color: var(--dark-gray); 
-            background-color: var(--white); 
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--dark-gray); background-color: var(--white); line-height: 1.6; overflow-x: hidden; }
 
-        /* NAVEGACIÓN MEJORADA */
-        nav { 
-            background-color: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08); 
-            position: fixed; 
-            width: 100%; 
-            top: 0; 
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-        
-        nav.scrolled {
-            box-shadow: 0 4px 30px rgba(0,0,0,0.12);
-        }
-        
-        .nav-container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 1.2rem 2rem; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-        
-        .logo { 
-            font-size: 1.5rem; 
-            font-weight: 800; 
-            color: var(--primary-blue); 
-            letter-spacing: -0.5px;
+        /* LOADING SCREEN */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
             display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo i {
-            font-size: 1.8rem;
-        }
-        
-        .nav-links { 
-            display: flex; 
-            gap: 30px; 
-            align-items: center; 
-        }
-        
-        .nav-links a { 
-            text-decoration: none; 
-            color: var(--dark-gray); 
-            font-weight: 500; 
-            transition: all 0.3s;
-            font-size: 0.95rem;
-        }
-        
-        .nav-links a:hover { 
-            color: var(--primary-blue); 
-        }
-        
-        .btn-nav { 
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
-            color: white !important; 
-            padding: 10px 24px; 
-            border-radius: 8px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        }
-        
-        .btn-nav:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-        }
-
-        /* MENÚ MÓVIL */
-        .menu-toggle {
-            display: none;
             flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-        }
-        
-        .menu-toggle span {
-            width: 25px;
-            height: 3px;
-            background: var(--primary-blue);
-            border-radius: 3px;
-            transition: 0.3s;
-        }
-
-        /* HERO SECTION MEJORADA */
-        .hero { 
-            background: linear-gradient(135deg, #1e3a8a 0%, var(--primary-blue) 50%, #3b82f6 100%);
-            color: white; 
-            padding: 180px 20px 120px; 
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
-            opacity: 0.3;
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .hero h1 { 
-            font-size: 3.5rem; 
-            margin-bottom: 25px;
-            font-weight: 800;
-            line-height: 1.2;
-            animation: fadeInUp 0.8s ease;
-        }
-        
-        .hero p { 
-            font-size: 1.3rem; 
-            max-width: 700px; 
-            margin: 0 auto 40px; 
-            opacity: 0.95;
-            animation: fadeInUp 0.8s ease 0.2s backwards;
-        }
-        
-        /* CREDENCIALES MEJORADAS */
-        .badges { 
-            display: flex; 
-            justify-content: center; 
-            gap: 20px; 
-            margin-top: 30px; 
-            flex-wrap: wrap;
-            animation: fadeInUp 0.8s ease 0.4s backwards;
-        }
-        
-        .badge { 
-            background: rgba(255,255,255,0.15); 
-            backdrop-filter: blur(10px);
-            padding: 12px 24px; 
-            border-radius: 30px; 
-            font-size: 0.95rem; 
-            border: 1px solid rgba(255,255,255,0.3);
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        
-        .badge:hover {
-            background: rgba(255,255,255,0.25);
-            transform: translateY(-3px);
-        }
-
-        /* STATS SECTION */
-        .stats-section {
-            background: var(--white);
-            padding: 60px 20px;
-            box-shadow: 0 -5px 30px rgba(0,0,0,0.05);
-        }
-        
-        .stats-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            text-align: center;
-        }
-        
-        .stat-item {
-            padding: 20px;
-        }
-        
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--primary-blue);
-            margin-bottom: 10px;
-        }
-        
-        .stat-label {
-            font-size: 1.1rem;
-            color: var(--medium-gray);
-            font-weight: 500;
-        }
-
-        /* SERVICIOS MEJORADOS */
-        .services-section { 
-            padding: 100px 20px; 
-            background: linear-gradient(180deg, var(--light-gray) 0%, var(--white) 100%);
-        }
-        
-        .section-title { 
-            text-align: center; 
-            margin-bottom: 20px; 
-            color: var(--dark-gray); 
-            font-size: 2.5rem; 
-            font-weight: 800;
-        }
-        
-        .section-subtitle {
-            text-align: center;
-            color: var(--medium-gray);
-            font-size: 1.1rem;
-            margin-bottom: 60px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .pricing-cards { 
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px; 
-            max-width: 1200px; 
-            margin: 0 auto; 
-        }
-
-        .card { 
-            background: white; 
-            border-radius: 16px; 
-            padding: 45px; 
-            text-align: center; 
-            box-shadow: var(--shadow);
-            transition: all 0.4s ease;
-            border: 1px solid rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-blue), var(--accent-green));
-        }
-        
-        .card:hover { 
-            transform: translateY(-15px); 
-            box-shadow: var(--shadow-hover);
-        }
-        
-        .card.featured {
-            border: 2px solid var(--accent-green);
-            transform: scale(1.05);
-        }
-        
-        .featured-badge {
-            background: var(--accent-green);
-            color: white;
-            padding: 8px 20px;
-            font-size: 0.85rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 20px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        
-        .card h3 { 
-            font-size: 1.8rem; 
-            margin-bottom: 20px; 
-            color: var(--dark-gray);
-            font-weight: 700;
-        }
-        
-        .price { 
-            font-size: 3.5rem; 
-            font-weight: 800; 
-            color: var(--primary-blue); 
-            margin-bottom: 30px; 
-            display: block;
-            line-height: 1;
-        }
-        
-        .price span { 
-            font-size: 1.2rem; 
-            color: var(--medium-gray); 
-            font-weight: 500; 
-        }
-        
-        .features { 
-            list-style: none; 
-            margin-bottom: 35px; 
-            text-align: left; 
-        }
-        
-        .features li { 
-            margin-bottom: 15px; 
-            padding-left: 30px; 
-            position: relative;
-            color: var(--dark-gray);
-            font-size: 0.95rem;
-        }
-        
-        .features li::before { 
-            content: "✓"; 
-            color: var(--accent-green); 
-            position: absolute; 
-            left: 0; 
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .btn-card { 
-            display: inline-block; 
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
-            color: white; 
-            padding: 14px 32px; 
-            text-decoration: none; 
-            border-radius: 10px; 
-            font-weight: 700; 
-            transition: all 0.3s;
-            width: 100%;
-            font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        }
-        
-        .btn-card:hover { 
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
-        }
-        
-        .card.featured .btn-card {
-            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-dark) 100%);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-        
-        .card.featured .btn-card:hover {
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-        }
-
-        /* SECCIÓN SOBRE MÍ */
-        .about-section {
-            padding: 100px 20px;
-            background: var(--white);
-        }
-        
-        .about-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-        
-        .about-image {
-            width: 100%;
-            height: 400px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-green) 100%);
-            border-radius: 20px;
-            display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 8rem;
-            color: white;
-            box-shadow: var(--shadow);
+            z-index: 9999;
+            transition: opacity 0.5s ease;
         }
-        
-        .about-content h2 {
-            font-size: 2.5rem;
-            color: var(--dark-gray);
-            margin-bottom: 20px;
-            font-weight: 800;
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
-        
-        .about-content p {
-            color: var(--medium-gray);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            line-height: 1.8;
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--light-blue);
+            border-top: 5px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        
-        .certifications {
-            margin-top: 30px;
-        }
-        
-        .cert-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: var(--light-gray);
-            border-radius: 10px;
-        }
-        
-        .cert-item i {
-            font-size: 1.5rem;
+
+        .loading-text {
+            margin-top: 20px;
             color: var(--primary-blue);
+            font-size: 1.1rem;
+            font-weight: 600;
         }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* NAVEGACIÓN */
+        nav { background-color: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); box-shadow: 0 2px 20px rgba(0,0,0,0.08); position: fixed; width: 100%; top: 0; z-index: 1000; transition: all 0.3s ease; }
+        nav.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.12); background-color: rgba(255, 255, 255, 1); }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary-blue); letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .logo i { font-size: 1.8rem; }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--dark-gray); font-weight: 500; transition: all 0.3s; font-size: 0.95rem; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--primary-blue); transition: width 0.3s; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: var(--primary-blue); }
+        .btn-nav { background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%); color: white !important; padding: 10px 24px; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); cursor: pointer; border: none; }
+        .btn-nav::after { display: none; }
+        .btn-nav:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4); }
+        .user-menu { position: relative; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+        .user-avatar:hover { transform: scale(1.1); }
+        .dropdown-menu { position: absolute; top: 60px; right: 0; background: white; border-radius: 12px; box-shadow: var(--shadow); min-width: 200px; display: none; overflow: hidden; }
+        .dropdown-menu.active { display: block; animation: slideDown 0.3s ease; }
+        .dropdown-menu a, .dropdown-menu button { display: block; padding: 12px 20px; color: var(--dark-gray); text-decoration: none; transition: all 0.3s; border: none; background: none; width: 100%; text-align: left; cursor: pointer; font-size: 0.95rem; }
+        .dropdown-menu a:hover, .dropdown-menu button:hover { background: var(--light-gray); color: var(--primary-blue); }
+        .menu-toggle { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+        .menu-toggle span { width: 25px; height: 3px; background: var(--primary-blue); border-radius: 3px; transition: 0.3s; }
+
+        /* HERO MEJORADO */
+        .hero { background: linear-gradient(135deg, #1e3a8a 0%, var(--primary-blue) 50%, #3b82f6 100%); color: white; padding: 200px 20px 140px; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>'); opacity: 0.3; }
+        .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to top, var(--white), transparent); }
+        .hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+        .hero-badge { display: inline-block; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 20px; border-radius: 30px; font-size: 0.9rem; margin-bottom: 20px; animation: fadeInUp 0.8s ease; }
+        .hero-badge i { color: var(--accent-green); }
+        .hero h1 { font-size: 4rem; margin-bottom: 25px; font-weight: 900; line-height: 1.1; animation: fadeInUp 0.8s ease 0.1s backwards; text-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .hero h1 .highlight { background: linear-gradient(90deg, #fff, #a5f3fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: 1.4rem; max-width: 700px; margin: 0 auto 45px; opacity: 0.95; animation: fadeInUp 0.8s ease 0.2s backwards; }
+        .hero-cta { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; animation: fadeInUp 0.8s ease 0.3s backwards; }
+        .btn-hero { padding: 18px 40px; font-size: 1.1rem; font-weight: 700; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s; border: none; cursor: pointer; }
+        .btn-hero-primary { background: white; color: var(--primary-blue); box-shadow: 0 6px 25px rgba(255,255,255,0.3); }
+        .btn-hero-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 35px rgba(255,255,255,0.4); }
+        .btn-hero-secondary { background: rgba(255,255,255,0.1); color: white; border: 2px solid rgba(255,255,255,0.5); backdrop-filter: blur(10px); }
+        .btn-hero-secondary:hover { background: rgba(255,255,255,0.2); border-color: white; }
+        .badges { display: flex; justify-content: center; gap: 20px; margin-top: 50px; flex-wrap: wrap; animation: fadeInUp 0.8s ease 0.4s backwards; }
+        .badge { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 12px 24px; border-radius: 30px; font-size: 0.95rem; border: 1px solid rgba(255,255,255,0.3); font-weight: 500; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.25); transform: translateY(-3px); }
+
+        /* STATS */
+        .stats-section { background: var(--white); padding: 80px 20px; margin-top: -60px; position: relative; z-index: 10; }
+        .stats-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; background: white; padding: 50px 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
+        .stat-item { text-align: center; position: relative; }
+        .stat-item::after { content: ''; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background: linear-gradient(to bottom, transparent, var(--light-gray), transparent); }
+        .stat-item:last-child::after { display: none; }
+        .stat-icon { font-size: 3rem; margin-bottom: 15px; background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .stat-number { font-size: 3.5rem; font-weight: 900; color: var(--primary-blue); margin-bottom: 10px; line-height: 1; }
+        .stat-label { font-size: 1rem; color: var(--medium-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.9rem; }
+
+        /* WHY US */
+        .why-us-section { padding: 100px 20px; background: linear-gradient(180deg, var(--white) 0%, var(--light-gray) 100%); }
+        .why-us-container { max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; margin-bottom: 20px; color: var(--dark-gray); font-size: 2.8rem; font-weight: 900; }
+        .section-title .gradient-text { background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .section-subtitle { text-align: center; color: var(--medium-gray); font-size: 1.2rem; margin-bottom: 60px; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .why-us-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 60px; }
+        .why-us-card { background: white; padding: 40px 30px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: all 0.4s ease; border: 2px solid transparent; }
+        .why-us-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); border-color: var(--primary-blue); }
+        .why-us-icon { width: 80px; height: 80px; margin: 0 auto 25px; background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: white; transition: all 0.3s; }
+        .why-us-card:hover .why-us-icon { transform: scale(1.1) rotate(5deg); }
+        .why-us-card h3 { font-size: 1.5rem; margin-bottom: 15px; color: var(--dark-gray); font-weight: 700; }
+        .why-us-card p { color: var(--medium-gray); line-height: 1.7; font-size: 0.95rem; }
+
+        /* SERVICIOS */
+        .services-section { padding: 100px 20px; background: var(--white); }
+        .pricing-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; border-radius: 24px; padding: 45px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.08); transition: all 0.4s ease; border: 2px solid rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, var(--primary-blue), var(--accent-green)); }
+        .card:hover { transform: translateY(-15px); box-shadow: 0 20px 60px rgba(0,0,0,0.15); border-color: var(--primary-blue); }
+        .card.featured { background: linear-gradient(135deg, #f8faff 0%, #e3f2fd 100%); border: 3px solid var(--accent-green); transform: scale(1.05); }
+        .card.featured::before { height: 6px; background: var(--accent-green); }
+        .featured-badge { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: white; padding: 10px 24px; font-size: 0.85rem; border-radius: 25px; display: inline-block; margin-bottom: 20px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        .card-icon { font-size: 3.5rem; margin-bottom: 20px; background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .card h3 { font-size: 1.9rem; margin-bottom: 20px; color: var(--dark-gray); font-weight: 800; }
+        .price { font-size: 4rem; font-weight: 900; color: var(--primary-blue); margin-bottom: 10px; display: block; line-height: 1; }
+        .price span { font-size: 1.3rem; color: var(--medium-gray); font-weight: 600; }
+        .price-note { font-size: 0.85rem; color: var(--medium-gray); margin-bottom: 30px; }
+        .features { list-style: none; margin-bottom: 35px; text-align: left; }
+        .features li { margin-bottom: 16px; padding-left: 35px; position: relative; color: var(--dark-gray); font-size: 1rem; font-weight: 500; }
+        .features li::before { content: "✓"; color: var(--accent-green); position: absolute; left: 0; font-weight: bold; font-size: 1.4rem; background: rgba(16, 185, 129, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .btn-card { display: inline-block; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%); color: white; padding: 16px 36px; text-decoration: none; border-radius: 12px; font-weight: 700; transition: all 0.3s; width: 100%; font-size: 1.05rem; box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3); border: none; cursor: pointer; }
+        .btn-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4); }
+        .card.featured .btn-card { background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-dark) 100%); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3); }
+        .card.featured .btn-card:hover { box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); }
+
+        /* PROCESO */
+        .process-section { padding: 100px 20px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%); color: white; position: relative; overflow: hidden; }
+        .process-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.05)"/></svg>'); opacity: 0.5; }
+        .process-container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+        .process-title { text-align: center; font-size: 2.8rem; font-weight: 900; margin-bottom: 20px; }
+        .process-subtitle { text-align: center; font-size: 1.2rem; opacity: 0.9; margin-bottom: 60px; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
+        .process-step { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 40px 30px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.2); text-align: center; transition: all 0.3s; }
+        .process-step:hover { background: rgba(255,255,255,0.15); transform: translateY(-10px); }
+        .process-number { width: 70px; height: 70px; background: white; color: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; margin: 0 auto 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .process-step h3 { font-size: 1.5rem; margin-bottom: 15px; font-weight: 700; }
+        .process-step p { opacity: 0.95; line-height: 1.7; }
+
+        /* ABOUT */
+        .about-section { padding: 100px 20px; background: var(--light-gray); }
+        .about-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .about-image { width: 100%; height: 450px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-green) 100%); border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 10rem; color: white; box-shadow: 0 20px 60px rgba(0,0,0,0.15); position: relative; overflow: hidden; }
+        .about-image::before { content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); animation: rotate 20s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .about-content h2 { font-size: 2.8rem; color: var(--dark-gray); margin-bottom: 25px; font-weight: 900; line-height: 1.2; }
+        .about-content h2 .gradient-text { background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .about-content p { color: var(--medium-gray); font-size: 1.1rem; margin-bottom: 20px; line-height: 1.8; }
+        .certifications { margin-top: 40px; }
+        .cert-item { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .cert-item:hover { transform: translateX(10px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .cert-item i { font-size: 2.5rem; color: var(--primary-blue); min-width: 50px; }
+        .cert-item strong { display: block; font-size: 1.1rem; margin-bottom: 5px; color: var(--dark-gray); }
+        .cert-item small { color: var(--medium-gray); font-size: 0.95rem; }
+
+        /* FAQ */
+        .faq-section { padding: 100px 20px; background: var(--white); }
+        .faq-container { max-width: 900px; margin: 0 auto; }
+        .faq-item { background: var(--light-gray); margin-bottom: 20px; border-radius: 15px; overflow: hidden; transition: all 0.3s; }
+        .faq-item:hover { box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
+        .faq-question { padding: 25px 30px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 1.1rem; color: var(--dark-gray); user-select: none; }
+        .faq-question i { color: var(--primary-blue); transition: transform 0.3s; font-size: 1.3rem; }
+        .faq-question:hover { color: var(--primary-blue); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .faq-answer-content { padding: 0 30px 25px 30px; color: var(--medium-gray); line-height: 1.8; }
+        .faq-item.active .faq-question i { transform: rotate(180deg); }
+        .faq-item.active .faq-answer { max-height: 500px; }
 
         /* TESTIMONIOS */
-        .testimonials-section {
-            padding: 100px 20px;
-            background: var(--light-gray);
-        }
-        
-        .testimonials-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-        }
-        
-        .testimonial-card {
-            background: white;
-            padding: 35px;
-            border-radius: 16px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s;
-        }
-        
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-        }
-        
-        .stars {
-            color: #fbbf24;
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-        }
-        
-        .testimonial-text {
-            color: var(--medium-gray);
-            font-style: italic;
-            margin-bottom: 20px;
-            line-height: 1.7;
-        }
-        
-        .testimonial-author {
-            font-weight: 700;
-            color: var(--dark-gray);
-        }
+        .testimonials-section { padding: 100px 20px; background: var(--light-gray); }
+        .testimonials-container { max-width: 1200px; margin: 0 auto; }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 35px; margin-top: 60px; }
+        .testimonial-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); transition: all 0.3s; position: relative; }
+        .testimonial-card::before { content: '"'; position: absolute; top: 20px; left: 30px; font-size: 6rem; color: var(--light-blue); font-family: Georgia, serif; line-height: 1; }
+        .testimonial-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+        .testimonial-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; position: relative; z-index: 1; }
+        .testimonial-avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 700; flex-shrink: 0; }
+        .testimonial-info { flex: 1; }
+        .testimonial-author { font-weight: 700; color: var(--dark-gray); font-size: 1.1rem; margin-bottom: 3px; }
+        .stars { color: #fbbf24; font-size: 1rem; }
+        .testimonial-text { color: var(--medium-gray); font-style: italic; margin-bottom: 15px; line-height: 1.8; position: relative; z-index: 1; }
+        .testimonial-date { font-size: 0.85rem; color: var(--medium-gray); font-style: normal; }
+        .btn-review { display: inline-block; margin-top: 40px; padding: 16px 36px; background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark)); color: white; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; font-size: 1.05rem; transition: all 0.3s; box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3); }
+        .btn-review:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4); }
 
-        /* CONTACTO CTA */
-        .cta-section {
-            padding: 100px 20px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
-            color: white;
-            text-align: center;
-        }
-        
-        .cta-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .cta-content h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            font-weight: 800;
-        }
-        
-        .cta-content p {
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            opacity: 0.95;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .btn-cta {
-            padding: 16px 40px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .btn-cta-primary {
-            background: white;
-            color: var(--primary-blue);
-        }
-        
-        .btn-cta-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255,255,255,0.3);
-        }
-        
-        .btn-cta-secondary {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 2px solid white;
-        }
-        
-        .btn-cta-secondary:hover {
-            background: rgba(255,255,255,0.2);
-        }
+        /* CTA */
+        .cta-section { padding: 120px 20px; background: linear-gradient(135deg, var(--dark-gray) 0%, #000 100%); color: white; text-align: center; position: relative; overflow: hidden; }
+        .cta-section::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, transparent 70%); animation: pulse-cta 4s ease-in-out infinite; }
+        @keyframes pulse-cta { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
+        .cta-content { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .cta-content h2 { font-size: 3rem; margin-bottom: 25px; font-weight: 900; line-height: 1.2; }
+        .cta-content p { font-size: 1.3rem; margin-bottom: 45px; opacity: 0.95; }
+        .cta-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .btn-cta { padding: 18px 45px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 1.1rem; transition: all 0.3s; display: inline-flex; align-items: center; gap: 12px; }
+        .btn-cta-primary { background: white; color: var(--primary-blue); box-shadow: 0 8px 25px rgba(255,255,255,0.2); }
+        .btn-cta-primary:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(255,255,255,0.3); }
+        .btn-cta-secondary { background: var(--accent-green); color: white; box-shadow: 0 8px 25px rgba(16,185,129,0.3); }
+        .btn-cta-secondary:hover { background: var(--accent-green-dark); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(16,185,129,0.4); }
 
-        /* FOOTER MEJORADO */
-        .footer { 
-            background-color: #111827; 
-            color: #9ca3af; 
-            padding: 60px 20px 30px; 
-        }
-        
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-        
-        .footer-section h3 {
-            color: white;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-        
-        .footer-section p,
-        .footer-section a {
-            color: #9ca3af;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 10px;
-            transition: color 0.3s;
-        }
-        
-        .footer-section a:hover {
-            color: var(--primary-blue);
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .social-links a {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-        
-        .social-links a:hover {
-            background: var(--primary-blue);
-            transform: translateY(-3px);
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.9rem;
-        }
+        /* FOOTER */
+        .footer { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #94a3b8; padding: 80px 20px 30px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 50px; margin-bottom: 50px; }
+        .footer-section h3 { color: white; margin-bottom: 25px; font-size: 1.3rem; font-weight: 700; }
+        .footer-logo { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .footer-section p, .footer-section a { color: #94a3b8; text-decoration: none; display: block; margin-bottom: 12px; transition: color 0.3s; line-height: 1.7; }
+        .footer-section a:hover { color: var(--primary-blue); padding-left: 5px; }
+        .social-links { display: flex; gap: 15px; margin-top: 25px; }
+        .social-links a { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; padding: 0; }
+        .social-links a:hover { background: var(--primary-blue); transform: translateY(-5px); color: white; }
+        .footer-bottom { text-align: center; padding-top: 35px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.95rem; }
 
-        /* WHATSAPP FLOAT MEJORADO */
-        .whatsapp-float { 
-            position: fixed; 
-            bottom: 30px; 
-            right: 30px; 
-            background: linear-gradient(135deg, #25d366 0%, #20ba5a 100%);
-            color: white; 
-            padding: 16px 28px; 
-            border-radius: 50px; 
-            font-weight: 700; 
-            text-decoration: none; 
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-            animation: pulse 2s infinite;
-        }
-        
-        .whatsapp-float:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.5);
-        }
-        
-        .whatsapp-float i {
-            font-size: 1.3rem;
-        }
+        /* BOTONES FLOTANTES */
+        .float-buttons { position: fixed; bottom: 30px; right: 30px; z-index: 999; display: flex; flex-direction: column; gap: 15px; }
+        .whatsapp-float, .call-float { background: linear-gradient(135deg, #25d366 0%, #20ba5a 100%); color: white; padding: 16px 28px; border-radius: 50px; font-weight: 700; text-decoration: none; box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4); display: flex; align-items: center; gap: 12px; transition: all 0.3s; animation: pulse 2s infinite; }
+        .call-float { background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark)); box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4); animation: none; }
+        .whatsapp-float:hover, .call-float:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 12px 35px rgba(37, 211, 102, 0.5); }
+        .call-float:hover { box-shadow: 0 12px 35px rgba(37, 99, 235, 0.5); }
+        .whatsapp-float i, .call-float i { font-size: 1.4rem; }
+
+        /* MODALES */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); z-index: 2000; justify-content: center; align-items: center; animation: fadeIn 0.3s ease; backdrop-filter: blur(5px); }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 24px; padding: 45px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
+        .modal-close { position: absolute; top: 25px; right: 25px; font-size: 1.8rem; cursor: pointer; color: var(--medium-gray); transition: all 0.3s; background: none; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .modal-close:hover { background: var(--light-gray); color: var(--dark-gray); transform: rotate(90deg); }
+        .modal h2 { font-size: 2.2rem; margin-bottom: 15px; color: var(--dark-gray); font-weight: 900; }
+        .modal p { color: var(--medium-gray); margin-bottom: 35px; font-size: 1.05rem; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; margin-bottom: 10px; font-weight: 600; color: var(--dark-gray); font-size: 1rem; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 14px 18px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.3s; font-family: inherit; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .btn-primary { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark)); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 1.05rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4); }
+        .btn-secondary { width: 100%; padding: 16px; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); border-radius: 10px; font-weight: 700; font-size: 1.05rem; cursor: pointer; transition: all 0.3s; margin-top: 12px; }
+        .btn-secondary:hover { background: var(--light-blue); }
+        .switch-text { text-align: center; margin-top: 25px; color: var(--medium-gray); font-size: 0.95rem; }
+        .switch-text a { color: var(--primary-blue); font-weight: 600; cursor: pointer; text-decoration: none; }
+        .switch-text a:hover { text-decoration: underline; }
+        .alert { padding: 14px 18px; border-radius: 10px; margin-bottom: 25px; font-size: 0.95rem; font-weight: 500; }
+        .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* SCROLL TO TOP */
+        .scroll-top { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; background: var(--primary-blue); color: white; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; transition: all 0.3s; z-index: 998; box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3); }
+        .scroll-top.active { display: flex; }
+        .scroll-top:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4); }
 
         /* ANIMACIONES */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* RESPONSIVE */
         @media (max-width: 768px) { 
-            .nav-links { 
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: white;
-                flex-direction: column;
-                padding: 20px;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            }
-            
-            .nav-links.active {
-                display: flex;
-            }
-            
-            .menu-toggle {
-                display: flex;
-            }
-            
-            .hero h1 { 
-                font-size: 2.2rem; 
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .stat-number {
-                font-size: 2.5rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .about-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .about-image {
-                height: 300px;
-                font-size: 6rem;
-            }
-            
-            .pricing-cards {
-                grid-template-columns: 1fr;
-            }
-            
-            .card.featured {
-                transform: scale(1);
-            }
-            
-            .whatsapp-float {
-                bottom: 20px;
-                right: 20px;
-                padding: 14px 24px;
-                font-size: 0.9rem;
-            }
-            
-            .cta-content h2 {
-                font-size: 2rem;
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-            }
+            .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; flex-direction: column; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+            .nav-links.active { display: flex; }
+            .menu-toggle { display: flex; }
+            .hero { padding: 160px 20px 100px; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.1rem; }
+            .hero-cta { flex-direction: column; }
+            .btn-hero { width: 100%; }
+            .stats-container { padding: 30px 20px; gap: 30px; }
+            .stat-item::after { display: none; }
+            .stat-number { font-size: 2.8rem; }
+            .section-title { font-size: 2.2rem; }
+            .why-us-grid, .process-steps { grid-template-columns: 1fr; }
+            .about-container { grid-template-columns: 1fr; gap: 40px; }
+            .about-image { height: 300px; font-size: 7rem; }
+            .pricing-cards, .testimonials-grid { grid-template-columns: 1fr; }
+            .card.featured { transform: scale(1); }
+            .footer-container { grid-template-columns: 1fr; gap: 40px; }
+            .float-buttons { bottom: 20px; right: 20px; }
+            .whatsapp-float, .call-float { padding: 14px 24px; font-size: 0.9rem; }
+            .scroll-top { left: 20px; bottom: 110px; width: 45px; height: 45px; font-size: 1.1rem; }
+            .cta-content h2 { font-size: 2.2rem; }
+            .cta-buttons { flex-direction: column; }
+            .btn-cta { width: 100%; }
+            .modal-content { padding: 35px 25px; }
+            .process-title, .about-content h2 { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
+    <!-- LOADING SCREEN -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+        <div class="loading-text">Cargando...</div>
+    </div>
 
     <nav id="navbar">
         <div class="nav-container">
-            <div class="logo">
+            <div class="logo" onclick="window.location.reload()">
                 <i class="fas fa-laptop-code"></i>
                 ADOLFO UGALDE
             </div>
@@ -753,58 +348,239 @@
             <div class="nav-links" id="navLinks">
                 <a href="#inicio">Inicio</a>
                 <a href="#servicios">Servicios</a>
+                <a href="#proceso">Proceso</a>
                 <a href="#sobre-mi">Sobre Mí</a>
-                <a href="#testimonios">Testimonios</a>
-                <a href="https://wa.me/59169470880" class="btn-nav">
-                    <i class="fab fa-whatsapp"></i> Contactar
-                </a>
+                <a href="#testimonios">Reseñas</a>
+                <a href="#faq">FAQ</a>
+                
+                <div id="authButtons" style="display: flex; gap: 15px;">
+                    <button onclick="openLoginModal()" class="btn-nav">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                </div>
+
+                <div id="userMenu" class="user-menu" style="display: none;">
+                    <div class="user-avatar" onclick="toggleUserDropdown()" id="userAvatar"></div>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="#" onclick="openProfileModal()"><i class="fas fa-user"></i> Mi Perfil</a>
+                        <a href="#" onclick="openReviewModal()"><i class="fas fa-star"></i> Dejar Reseña</a>
+                        <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
+    <!-- MODALES -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+            <h2>Iniciar Sesión</h2>
+            <p>Ingresa para dejar tu reseña</p>
+            <div id="loginAlert"></div>
+            <form onsubmit="login(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required placeholder="tu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+            </form>
+            <p class="switch-text">
+                ¿No tienes cuenta? <a onclick="switchToRegister()">Regístrate aquí</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+            <h2>Crear Cuenta</h2>
+            <p>Regístrate para dejar tu reseña</p>
+            <div id="registerAlert"></div>
+            <form onsubmit="register(event)">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="registerName" required placeholder="Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail" required placeholder="tu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="registerPassword" required placeholder="••••••••" minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Contraseña</label>
+                    <input type="password" id="registerPasswordConfirm" required placeholder="••••••••" minlength="6">
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-user-plus"></i> Crear Cuenta
+                </button>
+            </form>
+            <p class="switch-text">
+                ¿Ya tienes cuenta? <a onclick="switchToLogin()">Inicia sesión aquí</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('reviewModal')">&times;</button>
+            <h2>Dejar una Reseña</h2>
+            <p>Cuéntanos sobre tu experiencia</p>
+            <div id="reviewAlert"></div>
+            <form onsubmit="submitReview(event)">
+                <div class="form-group">
+                    <label>Calificación</label>
+                    <select id="reviewRating" required>
+                        <option value="">Selecciona...</option>
+                        <option value="5">⭐⭐⭐⭐⭐ Excelente</option>
+                        <option value="4">⭐⭐⭐⭐ Muy Bueno</option>
+                        <option value="3">⭐⭐⭐ Bueno</option>
+                        <option value="2">⭐⭐ Regular</option>
+                        <option value="1">⭐ Malo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tu Reseña</label>
+                    <textarea id="reviewText" required placeholder="Cuéntanos sobre tu experiencia con el servicio..." minlength="20" maxlength="500"></textarea>
+                    <small style="color: var(--medium-gray);">Mínimo 20 caracteres, máximo 500</small>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-paper-plane"></i> Enviar Reseña
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('profileModal')">&times;</button>
+            <h2>Mi Perfil</h2>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); color: white; font-size: 3rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-weight: 800;" id="profileAvatar"></div>
+                <h3 id="profileName" style="margin-bottom: 5px;"></h3>
+                <p id="profileEmail" style="color: var(--medium-gray);"></p>
+            </div>
+            <div style="background: var(--light-gray); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                <h4 style="margin-bottom: 15px; color: var(--dark-gray);">Mis Reseñas</h4>
+                <div id="userReviewsList"></div>
+            </div>
+            <button onclick="closeModal('profileModal')" class="btn-secondary">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- HERO -->
     <header class="hero" id="inicio">
         <div class="hero-content">
-            <h1>Soporte Técnico de Computadoras</h1>
-            <p>Soluciones rápidas, profesionales y garantizadas para tu PC en Cochabamba. Más de 5 años de experiencia.</p>
+            <div class="hero-badge">
+                <i class="fas fa-check-circle"></i> Técnico Certificado IT Essentials
+            </div>
+            <h1>Soporte Técnico <span class="highlight">Profesional</span></h1>
+            <p>Tu computadora merece el mejor cuidado. Soluciones rápidas y garantizadas en Cochabamba.</p>
+            
+            <div class="hero-cta">
+                <a href="https://wa.me/59169470880?text=Hola%20Adolfo,%20necesito%20agendar%20una%20cita" class="btn-hero btn-hero-primary">
+                    <i class="fab fa-whatsapp"></i> Agendar Cita Ahora
+                </a>
+                <a href="#servicios" class="btn-hero btn-hero-secondary">
+                    <i class="fas fa-arrow-down"></i> Ver Servicios
+                </a>
+            </div>
             
             <div class="badges">
                 <span class="badge"><i class="fas fa-user-tie"></i> Adolfo Ugalde Rojas</span>
-                <span class="badge"><i class="fas fa-certificate"></i> Certificado IT Essentials</span>
                 <span class="badge"><i class="fas fa-map-marker-alt"></i> Cochabamba, Bolivia</span>
+                <span class="badge"><i class="fas fa-shield-check"></i> Garantía en todos los servicios</span>
             </div>
         </div>
     </header>
 
+    <!-- STATS -->
     <section class="stats-section">
         <div class="stats-container">
             <div class="stat-item">
-                <div class="stat-number">500+</div>
+                <div class="stat-icon"><i class="fas fa-laptop-medical"></i></div>
+                <div class="stat-number">24</div>
                 <div class="stat-label">Computadoras Reparadas</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">5+</div>
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-number">2</div>
                 <div class="stat-label">Años de Experiencia</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">Clientes Satisfechos</div>
+                <div class="stat-icon"><i class="fas fa-star"></i></div>
+                <div class="stat-number" id="reviewsCount">0</div>
+                <div class="stat-label">Reseñas de Clientes</div>
             </div>
             <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
                 <div class="stat-number">24h</div>
                 <div class="stat-label">Tiempo de Respuesta</div>
             </div>
         </div>
     </section>
 
+    <!-- WHY US -->
+    <section class="why-us-section">
+        <div class="why-us-container">
+            <h2 class="section-title">¿Por Qué <span class="gradient-text">Elegirnos?</span></h2>
+            <p class="section-subtitle">Más de 2 años brindando soluciones tecnológicas confiables y profesionales</p>
+            
+            <div class="why-us-grid">
+                <div class="why-us-card">
+                    <div class="why-us-icon"><i class="fas fa-certificate"></i></div>
+                    <h3>Técnico Certificado</h3>
+                    <p>Certificación oficial IT Essentials de Cisco. Conocimientos profesionales y actualizados.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Servicio Rápido</h3>
+                    <p>Diagnóstico y solución en el mismo día. No esperes días para volver a usar tu PC.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Garantía Total</h3>
+                    <p>Todos los servicios incluyen garantía. Tu inversión está protegida.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                    <h3>Precios Justos</h3>
+                    <p>Tarifas transparentes y competitivas. Sin costos ocultos ni sorpresas.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon"><i class="fas fa-home"></i></div>
+                    <h3>Servicio a Domicilio</h3>
+                    <p>Voy a tu casa u oficina. Comodidad y conveniencia garantizada.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon"><i class="fas fa-headset"></i></div>
+                    <h3>Soporte Continuo</h3>
+                    <p>Asesoría post-servicio sin costo adicional. Siempre disponible para ti.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICIOS -->
     <section id="servicios" class="services-section">
-        <h2 class="section-title">Catálogo de Servicios</h2>
-        <p class="section-subtitle">Servicios profesionales con garantía. Precios justos y transparentes.</p>
+        <h2 class="section-title">Nuestros <span class="gradient-text">Servicios</span></h2>
+        <p class="section-subtitle">Soluciones profesionales para cada necesidad. Precios transparentes y garantía incluida.</p>
         
         <div class="pricing-cards">
-            
             <div class="card">
+                <div class="card-icon"><i class="fas fa-download"></i></div>
                 <h3>Mantenimiento Software</h3>
                 <span class="price">50 <span>Bs</span></span>
+                <p class="price-note">Servicio completo de software</p>
                 <ul class="features">
                     <li>Formateo e instalación de Windows</li>
                     <li>Instalación de Drivers y Office</li>
@@ -819,9 +595,11 @@
             </div>
 
             <div class="card featured">
-                <div class="featured-badge">⭐ MÁS POPULAR</div>
+                <div class="featured-badge">⭐ Más Popular</div>
+                <div class="card-icon"><i class="fas fa-tools"></i></div>
                 <h3>Mantenimiento Hardware</h3>
-                <span class="price">150 <span>Bs</span></span>
+                <span class="price">160 <span>Bs</span></span>
+                <p class="price-note">El más solicitado</p>
                 <ul class="features">
                     <li>Limpieza profunda interna</li>
                     <li>Cambio de pasta térmica</li>
@@ -830,60 +608,93 @@
                     <li>Revisión de temperaturas</li>
                     <li>Reporte técnico completo</li>
                 </ul>
-                <a href="https://wa.me/59169470880?text=Hola%20Adolfo,%20me%20interesa%20el%20servicio%20de%20Hardware%20de%20150bs" class="btn-card">
+                <a href="https://wa.me/59169470880?text=Hola%20Adolfo,%20me%20interesa%20el%20servicio%20de%20Hardware%20de%20160bs" class="btn-card">
                     <i class="fab fa-whatsapp"></i> Agendar Cita
                 </a>
             </div>
 
             <div class="card">
+                <div class="card-icon"><i class="fas fa-rocket"></i></div>
                 <h3>Combo Completo</h3>
-                <span class="price">180 <span>Bs</span></span>
+                <span class="price">190 <span>Bs</span></span>
+                <p class="price-note">Máximo ahorro - Mejor valor</p>
                 <ul class="features">
-                    <li>Todo lo del Mantenimiento Software</li>
-                    <li>Todo lo del Mantenimiento Hardware</li>
+                    <li>Todo el Mantenimiento Software</li>
+                    <li>Todo el Mantenimiento Hardware</li>
                     <li>Instalación de programas adicionales</li>
                     <li>Configuración personalizada</li>
                     <li>Garantía extendida 30 días</li>
                     <li>Soporte post-servicio gratis</li>
                 </ul>
-                <a href="https://wa.me/59169470880?text=Hola%20Adolfo,%20me%20interesa%20el%20Combo%20Completo%20de%20180bs" class="btn-card">
+                <a href="https://wa.me/59169470880?text=Hola%20Adolfo,%20me%20interesa%20el%20Combo%20Completo%20de%20190bs" class="btn-card">
                     <i class="fab fa-whatsapp"></i> Agendar Cita
                 </a>
             </div>
-
         </div>
     </section>
 
+    <!-- PROCESO -->
+    <section id="proceso" class="process-section">
+        <div class="process-container">
+            <h2 class="process-title">¿Cómo Funciona?</h2>
+            <p class="process-subtitle">Proceso simple y transparente. De inicio a fin en 4 sencillos pasos.</p>
+            
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="process-number">1</div>
+                    <h3>Contacta</h3>
+                    <p>Envíame un mensaje por WhatsApp o llámame para contarme tu problema.</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-number">2</div>
+                    <h3>Agenda</h3>
+                    <p>Coordinamos fecha y hora. Voy a tu domicilio o recibes en taller.</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-number">3</div>
+                    <h3>Diagnóstico</h3>
+                    <p>Reviso tu equipo y te explico el problema y la solución necesaria.</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-number">4</div>
+                    <h3>Solución</h3>
+                    <p>Realizo el servicio y pruebo que todo funcione perfectamente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
     <section id="sobre-mi" class="about-section">
         <div class="about-container">
             <div class="about-image">
                 <i class="fas fa-user-circle"></i>
             </div>
             <div class="about-content">
-                <h2>Sobre Mí</h2>
-                <p>Hola, soy <strong>Adolfo Ugalde Rojas</strong>, técnico en computadoras con más de 5 años de experiencia en el área de soporte técnico y mantenimiento de equipos.</p>
-                <p>Mi pasión es ayudar a las personas a solucionar problemas tecnológicos de manera rápida y eficiente. Cuento con certificación oficial <strong>IT Essentials de Cisco</strong> y he trabajado en más de 500 equipos.</p>
+                <h2>Sobre <span class="gradient-text">Mí</span></h2>
+                <p>Hola, soy <strong>Adolfo Ugalde Rojas</strong>, técnico en computadoras con más de 2 años de experiencia en el área de soporte técnico y mantenimiento de equipos.</p>
+                <p>Mi pasión es ayudar a las personas a solucionar problemas tecnológicos de manera rápida y eficiente. Cuento con certificación oficial <strong>IT Essentials de Cisco</strong> y he trabajado en más de 24 equipos.</p>
                 <p>Me especializo en diagnóstico, reparación y optimización de computadoras, siempre ofreciendo un servicio honesto, transparente y de calidad.</p>
                 
                 <div class="certifications">
                     <div class="cert-item">
                         <i class="fas fa-medal"></i>
                         <div>
-                            <strong>Certificación IT Essentials</strong><br>
+                            <strong>Certificación IT Essentials</strong>
                             <small>Cisco Networking Academy</small>
                         </div>
                     </div>
                     <div class="cert-item">
                         <i class="fas fa-tools"></i>
                         <div>
-                            <strong>Especialista en Hardware</strong><br>
+                            <strong>Especialista en Hardware</strong>
                             <small>Ensamblaje, diagnóstico y reparación</small>
                         </div>
                     </div>
                     <div class="cert-item">
                         <i class="fas fa-shield-alt"></i>
                         <div>
-                            <strong>Seguridad Informática</strong><br>
+                            <strong>Seguridad Informática</strong>
                             <small>Eliminación de virus y protección</small>
                         </div>
                     </div>
@@ -892,41 +703,113 @@
         </div>
     </section>
 
-    <section id="testimonios" class="testimonials-section">
-        <div class="testimonials-container">
-            <h2 class="section-title">Lo Que Dicen Mis Clientes</h2>
-            <p class="section-subtitle">La satisfacción de mis clientes es mi mejor carta de presentación</p>
+    <!-- FAQ -->
+    <section id="faq" class="faq-section">
+        <div class="faq-container">
+            <h2 class="section-title">Preguntas <span class="gradient-text">Frecuentes</span></h2>
+            <p class="section-subtitle">Respuestas a las dudas más comunes sobre nuestros servicios</p>
             
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p class="testimonial-text">"Excelente servicio. Mi computadora estaba lentísima y ahora funciona como nueva. Adolfo es muy profesional y explica todo claramente."</p>
-                    <p class="testimonial-author">- María S.</p>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    ¿Cuánto tiempo tarda el servicio?
+                    <i class="fas fa-chevron-down"></i>
                 </div>
-                
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p class="testimonial-text">"Rápido y eficiente. Me hizo el mantenimiento completo en menos de 2 horas. Muy recomendado, precios justos."</p>
-                    <p class="testimonial-author">- Carlos R.</p>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        El mantenimiento software toma entre 1-2 horas. El mantenimiento hardware entre 1.5-3 horas dependiendo del estado del equipo. El combo completo puede tomar entre 3-4 horas. Siempre trato de completar el servicio el mismo día.
+                    </div>
                 </div>
-                
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p class="testimonial-text">"Mi laptop tenía virus y perdí archivos importantes. Adolfo recuperó todo y dejó la máquina impecable. Muy agradecido."</p>
-                    <p class="testimonial-author">- Juan P.</p>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    ¿Ofrecen servicio a domicilio?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Sí, ofrezco servicio a domicilio en toda la zona de Cochabamba sin costo adicional. También puedes traer tu equipo a mi taller si lo prefieres.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    ¿Qué incluye la garantía?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Todos los servicios incluyen garantía de 15 días. Si el mismo problema vuelve a aparecer dentro de ese período, lo arreglo sin costo adicional. El combo completo tiene garantía extendida de 30 días.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    ¿Qué métodos de pago aceptan?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Acepto efectivo, transferencia bancaria y QR. El pago se realiza una vez completado el servicio y verificado que todo funcione correctamente.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    ¿Qué pasa si mi problema es más complejo?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Primero hago un diagnóstico gratuito y te explico exactamente qué tiene tu equipo. Si requiere repuestos o trabajo adicional, te doy un presupuesto antes de proceder. Sin sorpresas.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    ¿Trabajan con laptops y PCs de escritorio?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Sí, trabajo con ambos tipos de equipos. También atiendo problemas con impresoras, configuración de redes WiFi y otros dispositivos relacionados.
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- TESTIMONIOS -->
+    <section id="testimonios" class="testimonials-section">
+        <div class="testimonials-container">
+            <h2 class="section-title">Lo Que Dicen <span class="gradient-text">Nuestros Clientes</span></h2>
+            <p class="section-subtitle">La satisfacción de nuestros clientes es nuestra mejor carta de presentación</p>
+            
+            <div class="testimonials-grid" id="reviewsContainer">
+                <!-- Las reseñas se cargarán dinámicamente aquí -->
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn-review" onclick="checkLoginAndReview()">
+                    <i class="fas fa-star"></i> Dejar mi Reseña
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
     <section class="cta-section">
         <div class="cta-content">
-            <h2>¿Tu PC tiene problemas?</h2>
-            <p>No esperes más. Agenda tu cita hoy y recibe un diagnóstico gratuito. Servicio a domicilio disponible en toda Cochabamba.</p>
+            <h2>¿Listo para dar nueva vida a tu PC?</h2>
+            <p>No esperes más. Agenda tu cita hoy y recibe un diagnóstico gratuito. Servicio profesional garantizado.</p>
             
             <div class="cta-buttons">
                 <a href="https://wa.me/59169470880?text=Hola%20Adolfo,%20necesito%20agendar%20una%20cita%20para%20mi%20PC" class="btn-cta btn-cta-primary">
-                    <i class="fab fa-whatsapp"></i> Agendar Cita por WhatsApp
+                    <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
                 </a>
                 <a href="tel:+59169470880" class="btn-cta btn-cta-secondary">
                     <i class="fas fa-phone"></i> Llamar Ahora
@@ -935,15 +818,20 @@
         </div>
     </section>
 
+    <!-- FOOTER -->
     <footer id="contacto" class="footer">
         <div class="footer-container">
             <div class="footer-section">
-                <h3>Adolfo Ugalde Rojas</h3>
-                <p>Técnico en Computadoras</p>
-                <p>Certificación IT Essentials</p>
+                <div class="footer-logo">
+                    <i class="fas fa-laptop-code"></i>
+                    ADOLFO UGALDE
+                </div>
+                <p>Técnico certificado en computadoras con más de 2 años de experiencia. Tu aliado tecnológico en Cochabamba.</p>
                 <div class="social-links">
-                    <a href="https://wa.me/59169470880"><i class="fab fa-whatsapp"></i></a>
-                    <a href="tel:+59169470880"><i class="fas fa-phone"></i></a>
+                    <a href="https://wa.me/59169470880" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="tel:+59169470880" aria-label="Teléfono"><i class="fas fa-phone"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
             
@@ -956,66 +844,374 @@
             </div>
             
             <div class="footer-section">
+                <h3>Enlaces</h3>
+                <a href="#inicio">Inicio</a>
+                <a href="#sobre-mi">Sobre Mí</a>
+                <a href="#testimonios">Reseñas</a>
+                <a href="#faq">Preguntas Frecuentes</a>
+            </div>
+            
+            <div class="footer-section">
                 <h3>Contacto</h3>
                 <p><i class="fas fa-map-marker-alt"></i> Cochabamba, Bolivia</p>
                 <p><i class="fas fa-phone"></i> +591 69470880</p>
                 <p><i class="fas fa-clock"></i> Lun - Sáb: 9:00 - 20:00</p>
                 <p><i class="fas fa-clock"></i> Dom: 10:00 - 18:00</p>
             </div>
-            
-            <div class="footer-section">
-                <h3>Información</h3>
-                <a href="#sobre-mi">Sobre Mí</a>
-                <a href="#testimonios">Testimonios</a>
-                <p>Servicio a domicilio disponible</p>
-                <p>Garantía en todos los servicios</p>
-            </div>
         </div>
         
         <div class="footer-bottom">
             <p>&copy; 2026 Adolfo Ugalde Rojas. Todos los derechos reservados.</p>
-            <p style="margin-top: 10px; font-size: 0.85rem;">Soporte Técnico Profesional en Cochabamba</p>
+            <p style="margin-top: 10px;">Soporte Técnico Profesional en Cochabamba 💻</p>
         </div>
     </footer>
 
-    <a href="https://wa.me/59169470880?text=Hola%20Adolfo,%20tengo%20una%20consulta%20sobre%20mi%20PC" class="whatsapp-float">
-        <i class="fab fa-whatsapp"></i>
-        WhatsApp
-    </a>
+    <!-- BOTONES FLOTANTES -->
+    <div class="float-buttons">
+        <a href="tel:+59169470880" class="call-float">
+            <i class="fas fa-phone"></i>
+            Llamar
+        </a>
+        <a href="https://wa.me/59169470880?text=Hola%20Adolfo,%20tengo%20una%20consulta%20sobre%20mi%20PC" class="whatsapp-float">
+            <i class="fab fa-whatsapp"></i>
+            WhatsApp
+        </a>
+    </div>
+
+    <!-- SCROLL TO TOP -->
+    <div class="scroll-top" id="scrollTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </div>
 
     <script>
-        // Navbar scroll effect
+        // ============================================
+        // FIREBASE CONFIGURATION
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyB1x3D6WnLAhX-u5bd7Smap3kf1kaSVaUc",
+            authDomain: "servicio-tecnico-tecnodolphy.firebaseapp.com",
+            projectId: "servicio-tecnico-tecnodolphy",
+            storageBucket: "servicio-tecnico-tecnodolphy.firebasestorage.app",
+            messagingSenderId: "550668657514",
+            appId: "1:550668657514:web:ddba4eba48328ea8257b13",
+            measurementId: "G-TSDY003MN7"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function showAlert(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => { container.innerHTML = ''; }, 5000);
+        }
+
+        function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+        function openLoginModal() { closeModal('registerModal'); openModal('loginModal'); }
+        function switchToRegister() { closeModal('loginModal'); openModal('registerModal'); }
+        function switchToLogin() { closeModal('registerModal'); openModal('loginModal'); }
+        function openReviewModal() { closeModal('profileModal'); openModal('reviewModal'); }
+
+        function openProfileModal() {
+            if (!currentUser) return;
+            document.getElementById('profileAvatar').textContent = currentUser.displayName.charAt(0).toUpperCase();
+            document.getElementById('profileName').textContent = currentUser.displayName;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+
+            db.collection('reviews').where('userId', '==', currentUser.uid).get()
+                .then(snapshot => {
+                    const reviewsList = document.getElementById('userReviewsList');
+                    if (snapshot.empty) {
+                        reviewsList.innerHTML = '<p style="color: var(--medium-gray); text-align: center;">Aún no has dejado ninguna reseña</p>';
+                    } else {
+                        reviewsList.innerHTML = snapshot.docs.map(doc => {
+                            const review = doc.data();
+                            return `
+                                <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                    <div style="color: #fbbf24; margin-bottom: 5px;">${'⭐'.repeat(review.rating)}</div>
+                                    <p style="margin-bottom: 5px;">${review.text}</p>
+                                    <small style="color: var(--medium-gray);">${new Date(review.date).toLocaleDateString('es-ES')}</small>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                });
+
+            openModal('profileModal');
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // ============================================
+        // AUTHENTICATION
+        // ============================================
+        function register(event) {
+            event.preventDefault();
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim().toLowerCase();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerPasswordConfirm').value;
+
+            if (password !== confirmPassword) {
+                showAlert('registerAlert', 'Las contraseñas no coinciden', 'error');
+                return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    return userCredential.user.updateProfile({ displayName: name });
+                })
+                .then(() => {
+                    showAlert('registerAlert', '¡Cuenta creada exitosamente! Iniciando sesión...', 'success');
+                    setTimeout(() => {
+                        closeModal('registerModal');
+                        document.getElementById('registerName').value = '';
+                        document.getElementById('registerEmail').value = '';
+                        document.getElementById('registerPassword').value = '';
+                        document.getElementById('registerPasswordConfirm').value = '';
+                    }, 1500);
+                })
+                .catch(error => {
+                    let message = 'Error al crear la cuenta';
+                    if (error.code === 'auth/email-already-in-use') {
+                        message = 'Este email ya está registrado';
+                    } else if (error.code === 'auth/weak-password') {
+                        message = 'La contraseña debe tener al menos 6 caracteres';
+                    }
+                    showAlert('registerAlert', message, 'error');
+                });
+        }
+
+        function login(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    showAlert('loginAlert', '¡Bienvenido! Iniciando sesión...', 'success');
+                    setTimeout(() => {
+                        closeModal('loginModal');
+                        document.getElementById('loginEmail').value = '';
+                        document.getElementById('loginPassword').value = '';
+                    }, 1000);
+                })
+                .catch(error => {
+                    showAlert('loginAlert', 'Email o contraseña incorrectos', 'error');
+                });
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                closeModal('profileModal');
+            });
+        }
+
+        auth.onAuthStateChanged(user => {
+            currentUser = user;
+            updateUIForUser();
+        });
+
+        function updateUIForUser() {
+            const authButtons = document.getElementById('authButtons');
+            const userMenu = document.getElementById('userMenu');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (currentUser) {
+                authButtons.style.display = 'none';
+                userMenu.style.display = 'block';
+                userAvatar.textContent = currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U';
+            } else {
+                authButtons.style.display = 'flex';
+                userMenu.style.display = 'none';
+            }
+        }
+
+        function toggleUserDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const userMenu = document.getElementById('userMenu');
+            const dropdown = document.getElementById('userDropdown');
+            if (!userMenu.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // ============================================
+        // REVIEWS
+        // ============================================
+        function checkLoginAndReview() {
+            if (!currentUser) {
+                openLoginModal();
+            } else {
+                openReviewModal();
+            }
+        }
+
+        function submitReview(event) {
+            event.preventDefault();
+            if (!currentUser) {
+                showAlert('reviewAlert', 'Debes iniciar sesión para dejar una reseña', 'error');
+                return;
+            }
+
+            const rating = parseInt(document.getElementById('reviewRating').value);
+            const text = document.getElementById('reviewText').value.trim();
+
+            if (text.length < 20) {
+                showAlert('reviewAlert', 'La reseña debe tener al menos 20 caracteres', 'error');
+                return;
+            }
+
+            db.collection('reviews').where('userId', '==', currentUser.uid).get()
+                .then(snapshot => {
+                    if (!snapshot.empty) {
+                        showAlert('reviewAlert', 'Ya has dejado una reseña. Solo puedes dejar una por cuenta.', 'error');
+                        return Promise.reject('already-reviewed');
+                    }
+
+                    return db.collection('reviews').add({
+                        userId: currentUser.uid,
+                        userName: currentUser.displayName || 'Usuario',
+                        rating: rating,
+                        text: text,
+                        date: new Date().toISOString()
+                    });
+                })
+                .then(() => {
+                    showAlert('reviewAlert', '¡Gracias por tu reseña! Se ha publicado correctamente.', 'success');
+                    setTimeout(() => {
+                        closeModal('reviewModal');
+                        document.getElementById('reviewRating').value = '';
+                        document.getElementById('reviewText').value = '';
+                        loadReviews();
+                    }, 2000);
+                })
+                .catch(error => {
+                    if (error !== 'already-reviewed') {
+                        showAlert('reviewAlert', 'Error al enviar la reseña. Intenta de nuevo.', 'error');
+                    }
+                });
+        }
+
+        function loadReviews() {
+            db.collection('reviews').orderBy('date', 'desc').get()
+                .then(snapshot => {
+                    const container = document.getElementById('reviewsContainer');
+                    const reviewsCount = document.getElementById('reviewsCount');
+
+                    reviewsCount.textContent = snapshot.size;
+
+                    if (snapshot.empty) {
+                        container.innerHTML = '<p style="text-align: center; color: var(--medium-gray); grid-column: 1/-1;">Aún no hay reseñas. ¡Sé el primero en dejar una!</p>';
+                        return;
+                    }
+
+                    container.innerHTML = snapshot.docs.map(doc => {
+                        const review = doc.data();
+                        const stars = '⭐'.repeat(review.rating);
+                        const date = new Date(review.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+                        const initial = review.userName.charAt(0).toUpperCase();
+
+                        return `
+                            <div class="testimonial-card">
+                                <div class="testimonial-header">
+                                    <div class="testimonial-avatar">${initial}</div>
+                                    <div class="testimonial-info">
+                                        <p class="testimonial-author">${review.userName}</p>
+                                        <div class="stars">${stars}</div>
+                                    </div>
+                                </div>
+                                <p class="testimonial-text">"${review.text}"</p>
+                                <p class="testimonial-date">${date}</p>
+                            </div>
+                        `;
+                    }).join('');
+                })
+                .catch(error => {
+                    console.error('Error loading reviews:', error);
+                });
+        }
+
+        // ============================================
+        // UI INTERACTIONS
+        // ============================================
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
+            const scrollTop = document.getElementById('scrollTop');
+            
             if (window.scrollY > 50) {
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
             }
+
+            if (window.scrollY > 300) {
+                scrollTop.classList.add('active');
+            } else {
+                scrollTop.classList.remove('active');
+            }
         });
 
-        // Mobile menu toggle
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function toggleMenu() {
             const navLinks = document.getElementById('navLinks');
             navLinks.classList.toggle('active');
         }
 
-        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    // Close mobile menu if open
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     document.getElementById('navLinks').classList.remove('active');
                 }
             });
         });
-    </script>
 
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            const isActive = faqItem.classList.contains('active');
+            
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        window.addEventListener('DOMContentLoaded', function() {
+            // Hide loading screen after Firebase is ready
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 1000);
+
+            loadReviews();
+        });
+    </script>
 </body>
 </html>
