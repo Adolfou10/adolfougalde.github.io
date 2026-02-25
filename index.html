@@ -349,7 +349,8 @@
                 <a href="#inicio">Inicio</a>
                 <a href="#servicios">Servicios</a>
                 <a href="#proceso">Proceso</a>
-                <a href="#sobre-mi">Sobre Mí</a>
+                <a href="#sobre-mi">Sobre Nosotros</a>
+                <a href="#galeria">Galería</a>
                 <a href="#testimonios">Reseñas</a>
                 <a href="#faq">FAQ</a>
                 
@@ -402,6 +403,11 @@
                     <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                 </button>
             </form>
+            
+            <button onclick="resendVerificationEmail()" id="resendEmailBtn" class="btn-secondary" style="display: none; margin-top: 15px;">
+                <i class="fas fa-envelope"></i> Reenviar email de verificación
+            </button>
+            
             <p class="switch-text">
                 ¿No tienes cuenta? <a onclick="switchToRegister()">Regístrate aquí</a>
             </p>
@@ -436,7 +442,8 @@
                 </div>
                 <div class="form-group">
                     <label>Contraseña</label>
-                    <input type="password" id="registerPassword" required placeholder="••••••••" minlength="6">
+                    <input type="password" id="registerPassword" required placeholder="••••••••" minlength="6" oninput="checkPasswordStrength()">
+                    <div id="passwordStrength" style="margin-top: 8px; font-size: 0.85rem;"></div>
                 </div>
                 <div class="form-group">
                     <label>Confirmar Contraseña</label>
@@ -472,8 +479,8 @@
                 </div>
                 <div class="form-group">
                     <label>Tu Reseña</label>
-                    <textarea id="reviewText" required placeholder="Cuéntanos sobre tu experiencia con el servicio..." minlength="20" maxlength="500"></textarea>
-                    <small style="color: var(--medium-gray);">Mínimo 20 caracteres, máximo 500</small>
+                    <textarea id="reviewText" required placeholder="Cuéntanos sobre tu experiencia con el servicio..." maxlength="500"></textarea>
+                    <small style="color: var(--medium-gray);">Máximo 500 caracteres</small>
                 </div>
                 <button type="submit" class="btn-primary">
                     <i class="fas fa-paper-plane"></i> Enviar Reseña
@@ -490,6 +497,7 @@
                 <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); color: white; font-size: 3rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-weight: 800;" id="profileAvatar"></div>
                 <h3 id="profileName" style="margin-bottom: 5px;"></h3>
                 <p id="profileEmail" style="color: var(--medium-gray);"></p>
+                <p id="verificationStatus" style="font-size: 0.9rem; margin-top: 10px; font-weight: 600;"></p>
             </div>
             <div style="background: var(--light-gray); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
                 <h4 style="margin-bottom: 15px; color: var(--dark-gray);">Mis Reseñas</h4>
@@ -520,7 +528,7 @@
             <div class="badges">
                 <span class="badge"><i class="fas fa-user-tie"></i> TECNODOLPHY</span>
                 <span class="badge"><i class="fas fa-map-marker-alt"></i> Cochabamba, Bolivia</span>
-                <span class="badge"><i class="fas fa-shield-check"></i> Garantía en todos los servicios</span>
+                <span class="badge"><i class="fas fa-certificate"></i> Técnico Certificado</span>
             </div>
         </div>
     </header>
@@ -570,8 +578,8 @@
                 </div>
                 <div class="why-us-card">
                     <div class="why-us-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3>Garantía Total</h3>
-                    <p>Todos los servicios incluyen garantía. Tu inversión está protegida.</p>
+                    <h3>Servicio Confiable</h3>
+                    <p>Todos los trabajos realizados con profesionalismo. Tu inversión está protegida.</p>
                 </div>
                 <div class="why-us-card">
                     <div class="why-us-icon"><i class="fas fa-hand-holding-usd"></i></div>
@@ -579,14 +587,14 @@
                     <p>Tarifas transparentes y competitivas. Sin costos ocultos ni sorpresas.</p>
                 </div>
                 <div class="why-us-card">
-                    <div class="why-us-icon"><i class="fas fa-home"></i></div>
-                    <h3>Servicio a Domicilio</h3>
-                    <p>Voy a tu casa u oficina. Comodidad y conveniencia garantizada.</p>
-                </div>
-                <div class="why-us-card">
                     <div class="why-us-icon"><i class="fas fa-headset"></i></div>
                     <h3>Soporte Continuo</h3>
                     <p>Asesoría post-servicio sin costo adicional. Siempre disponible para ti.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon"><i class="fas fa-award"></i></div>
+                    <h3>Trabajo de Calidad</h3>
+                    <p>Resultados profesionales que superan expectativas. Clientes satisfechos.</p>
                 </div>
             </div>
         </div>
@@ -644,7 +652,7 @@
                     <li>Hardware Estándar completo</li>
                     <li>Instalación de Office</li>
                     <li>Configuración básica</li>
-                    <li>Garantía 15 días</li>
+                    <li>Diagnóstico completo</li>
                     <li>Soporte por WhatsApp</li>
                 </ul>
                 <a href="https://wa.me/59169470880?text=Hola%20TECNODOLPHY,%20me%20interesa%20el%20Combo%20Estándar%20de%20100bs" class="btn-card">
@@ -707,7 +715,7 @@
                         <li>Hardware GAMER completo</li>
                         <li>Overclocking seguro (opcional)</li>
                         <li>Benchmark de rendimiento</li>
-                        <li>Garantía extendida 30 días</li>
+                        <li>Reporte técnico detallado</li>
                         <li>Soporte prioritario por WhatsApp</li>
                     </ul>
                     <a href="https://wa.me/59169470880?text=Hola%20TECNODOLPHY,%20me%20interesa%20el%20Combo%20GAMER%20de%20190bs" class="btn-card">
@@ -733,7 +741,7 @@
                 <div class="process-step">
                     <div class="process-number">2</div>
                     <h3>Agenda</h3>
-                    <p>Coordinamos fecha y hora. Voy a tu domicilio o recibes en taller.</p>
+                    <p>Coordinamos fecha y hora. Trae tu equipo al taller o envíanos los detalles.</p>
                 </div>
                 <div class="process-step">
                     <div class="process-number">3</div>
@@ -792,6 +800,96 @@
         </div>
     </section>
 
+    <!-- GALERÍA DE TRABAJOS -->
+    <section id="galeria" class="gallery-section" style="padding: 100px 20px; background: var(--white);">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h2 class="section-title">Nuestros <span class="gradient-text">Trabajos</span></h2>
+            <p class="section-subtitle">Equipos que hemos reparado y optimizado. Resultados reales de nuestros clientes.</p>
+            
+            <div class="gallery-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 60px;">
+                
+                <!-- Foto 1 -->
+                <div class="gallery-item" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1); transition: all 0.3s;">
+                    <img src="trabajo1.jpg" alt="Equipo reparado" style="width: 100%; height: 350px; object-fit: cover; display: block;" 
+                         onerror="this.src='https://via.placeholder.com/400x350/2563eb/ffffff?text=Trabajo+1'">
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 30px 20px 20px; color: white;">
+                        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 5px;">PC Gaming Optimizada</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Limpieza profunda + Optimización FPS</p>
+                    </div>
+                </div>
+
+                <!-- Foto 2 -->
+                <div class="gallery-item" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1); transition: all 0.3s;">
+                    <img src="trabajo2.jpg" alt="Equipo reparado" style="width: 100%; height: 350px; object-fit: cover; display: block;" 
+                         onerror="this.src='https://via.placeholder.com/400x350/10b981/ffffff?text=Trabajo+2'">
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 30px 20px 20px; color: white;">
+                        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 5px;">Laptop Restaurada</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Formateo + Cambio de pasta térmica</p>
+                    </div>
+                </div>
+
+                <!-- Foto 3 -->
+                <div class="gallery-item" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1); transition: all 0.3s;">
+                    <img src="trabajo3.jpg" alt="Equipo reparado" style="width: 100%; height: 350px; object-fit: cover; display: block;" 
+                         onerror="this.src='https://via.placeholder.com/400x350/f59e0b/ffffff?text=Trabajo+3'">
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 30px 20px 20px; color: white;">
+                        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 5px;">Setup Gaming Completo</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Build + Cable management + RGB</p>
+                    </div>
+                </div>
+
+                <!-- Foto 4 -->
+                <div class="gallery-item" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1); transition: all 0.3s;">
+                    <img src="trabajo4.jpg" alt="Equipo reparado" style="width: 100%; height: 350px; object-fit: cover; display: block;" 
+                         onerror="this.src='https://via.placeholder.com/400x350/8b5cf6/ffffff?text=Trabajo+4'">
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 30px 20px 20px; color: white;">
+                        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 5px;">PC Oficina</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Mantenimiento completo + Upgrades</p>
+                    </div>
+                </div>
+
+                <!-- Foto 5 -->
+                <div class="gallery-item" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1); transition: all 0.3s;">
+                    <img src="trabajo5.jpg" alt="Equipo reparado" style="width: 100%; height: 350px; object-fit: cover; display: block;" 
+                         onerror="this.src='https://via.placeholder.com/400x350/ef4444/ffffff?text=Trabajo+5'">
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 30px 20px 20px; color: white;">
+                        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 5px;">Recuperación de Datos</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">HDD fallando + Clonación exitosa</p>
+                    </div>
+                </div>
+
+                <!-- Foto 6 -->
+                <div class="gallery-item" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1); transition: all 0.3s;">
+                    <img src="trabajo6.jpg" alt="Equipo reparado" style="width: 100%; height: 350px; object-fit: cover; display: block;" 
+                         onerror="this.src='https://via.placeholder.com/400x350/06b6d4/ffffff?text=Trabajo+6'">
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 30px 20px 20px; color: white;">
+                        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 5px;">Laptop Gamer</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Repaste + Limpieza ventiladores</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <p style="text-align: center; margin-top: 50px; color: var(--medium-gray); font-size: 1rem;">
+                <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                Todos los trabajos son reales. Contáctanos para ver más ejemplos de nuestro trabajo.
+            </p>
+        </div>
+
+        <style>
+            .gallery-item:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15) !important;
+            }
+
+            @media (max-width: 768px) {
+                .gallery-grid {
+                    grid-template-columns: 1fr !important;
+                }
+            }
+        </style>
+    </section>
+
     <!-- FAQ -->
     <section id="faq" class="faq-section">
         <div class="faq-container">
@@ -806,30 +904,6 @@
                 <div class="faq-answer">
                     <div class="faq-answer-content">
                         El mantenimiento software toma entre 1-2 horas. El mantenimiento hardware entre 1.5-3 horas dependiendo del estado del equipo. El combo completo puede tomar entre 3-4 horas. Siempre trato de completar el servicio el mismo día.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    ¿Ofrecen servicio a domicilio?
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        Sí, ofrezco servicio a domicilio en toda la zona de Cochabamba sin costo adicional. También puedes traer tu equipo a mi taller si lo prefieres.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    ¿Qué incluye la garantía?
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <div class="faq-answer-content">
-                        Todos los servicios incluyen garantía de 15 días. Si el mismo problema vuelve a aparecer dentro de ese período, lo arreglo sin costo adicional. El combo completo tiene garantía extendida de 30 días.
                     </div>
                 </div>
             </div>
@@ -1011,9 +1085,19 @@
 
         function openProfileModal() {
             if (!currentUser) return;
-            document.getElementById('profileAvatar').textContent = currentUser.displayName.charAt(0).toUpperCase();
-            document.getElementById('profileName').textContent = currentUser.displayName;
+            document.getElementById('profileAvatar').textContent = currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U';
+            document.getElementById('profileName').textContent = currentUser.displayName || 'Usuario';
             document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            // Mostrar estado de verificación
+            const verificationStatus = document.getElementById('verificationStatus');
+            if (currentUser.emailVerified) {
+                verificationStatus.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981; margin-right: 5px;"></i> Email verificado';
+                verificationStatus.style.color = '#10b981';
+            } else {
+                verificationStatus.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #f59e0b; margin-right: 5px;"></i> Email no verificado';
+                verificationStatus.style.color = '#f59e0b';
+            }
 
             db.collection('reviews').where('userId', '==', currentUser.uid).get()
                 .then(snapshot => {
@@ -1081,24 +1165,42 @@
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerPasswordConfirm').value;
 
+            // Validación de contraseña
+            if (password.length < 6) {
+                showAlert('registerAlert', 'La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+
             if (password !== confirmPassword) {
                 showAlert('registerAlert', 'Las contraseñas no coinciden', 'error');
                 return;
             }
 
+            // Validación de email real
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAlert('registerAlert', 'Por favor ingresa un email válido', 'error');
+                return;
+            }
+
             auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
-                    return userCredential.user.updateProfile({ displayName: name });
+                    // Actualizar perfil con nombre
+                    return userCredential.user.updateProfile({ displayName: name })
+                        .then(() => {
+                            // ENVIAR EMAIL DE VERIFICACIÓN
+                            return userCredential.user.sendEmailVerification();
+                        });
                 })
                 .then(() => {
-                    showAlert('registerAlert', '¡Cuenta creada exitosamente! Iniciando sesión...', 'success');
+                    showAlert('registerAlert', '✅ Cuenta creada! Te enviamos un email de verificación. Revisa tu bandeja de entrada.', 'success');
                     setTimeout(() => {
                         closeModal('registerModal');
                         document.getElementById('registerName').value = '';
                         document.getElementById('registerEmail').value = '';
                         document.getElementById('registerPassword').value = '';
                         document.getElementById('registerPasswordConfirm').value = '';
-                    }, 1500);
+                    }, 3000);
                 })
                 .catch(error => {
                     let message = 'Error al crear la cuenta';
@@ -1106,6 +1208,8 @@
                         message = 'Este email ya está registrado';
                     } else if (error.code === 'auth/weak-password') {
                         message = 'La contraseña debe tener al menos 6 caracteres';
+                    } else if (error.code === 'auth/invalid-email') {
+                        message = 'El email no es válido';
                     }
                     showAlert('registerAlert', message, 'error');
                 });
@@ -1116,9 +1220,30 @@
             const email = document.getElementById('loginEmail').value.trim().toLowerCase();
             const password = document.getElementById('loginPassword').value;
 
+            // Validación de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAlert('loginAlert', 'Por favor ingresa un email válido', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('loginAlert', 'La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+
             auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
+                .then((userCredential) => {
+                    // Verificar si el email está verificado
+                    if (!userCredential.user.emailVerified) {
+                        showAlert('loginAlert', '⚠️ Tu email no está verificado. Revisa tu bandeja de entrada o haz clic en el botón de abajo.', 'error');
+                        // Mostrar botón para reenviar email
+                        document.getElementById('resendEmailBtn').style.display = 'block';
+                        return;
+                    }
+                    
                     showAlert('loginAlert', '¡Bienvenido! Iniciando sesión...', 'success');
+                    document.getElementById('resendEmailBtn').style.display = 'none';
                     setTimeout(() => {
                         closeModal('loginModal');
                         document.getElementById('loginEmail').value = '';
@@ -1126,8 +1251,68 @@
                     }, 1000);
                 })
                 .catch(error => {
-                    showAlert('loginAlert', 'Email o contraseña incorrectos', 'error');
+                    document.getElementById('resendEmailBtn').style.display = 'none';
+                    let message = 'Email o contraseña incorrectos';
+                    if (error.code === 'auth/invalid-email') {
+                        message = 'El formato del email no es válido';
+                    } else if (error.code === 'auth/user-not-found') {
+                        message = 'No existe una cuenta con este email';
+                    } else if (error.code === 'auth/wrong-password') {
+                        message = 'Contraseña incorrecta';
+                    } else if (error.code === 'auth/too-many-requests') {
+                        message = 'Demasiados intentos. Intenta más tarde.';
+                    }
+                    showAlert('loginAlert', message, 'error');
                 });
+        }
+
+        function resendVerificationEmail() {
+            if (auth.currentUser) {
+                auth.currentUser.sendEmailVerification()
+                    .then(() => {
+                        showAlert('loginAlert', '✅ Email de verificación reenviado. Revisa tu bandeja de entrada.', 'success');
+                        document.getElementById('resendEmailBtn').style.display = 'none';
+                    })
+                    .catch((error) => {
+                        showAlert('loginAlert', 'Error al enviar el email. Intenta más tarde.', 'error');
+                    });
+            } else {
+                showAlert('loginAlert', 'Debes iniciar sesión primero', 'error');
+            }
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('registerPassword').value;
+            const strengthDiv = document.getElementById('passwordStrength');
+            
+            if (password.length === 0) {
+                strengthDiv.innerHTML = '';
+                return;
+            }
+            
+            let strength = 0;
+            let message = '';
+            let color = '';
+            
+            // Criterios de fortaleza
+            if (password.length >= 6) strength++;
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            if (strength <= 2) {
+                message = '❌ Contraseña débil';
+                color = '#ef4444';
+            } else if (strength <= 3) {
+                message = '⚠️ Contraseña media';
+                color = '#f59e0b';
+            } else {
+                message = '✅ Contraseña fuerte';
+                color = '#10b981';
+            }
+            
+            strengthDiv.innerHTML = `<span style="color: ${color}; font-weight: 600;">${message}</span>`;
         }
 
         function logout() {
@@ -1149,7 +1334,15 @@
             if (currentUser) {
                 authButtons.style.display = 'none';
                 userMenu.style.display = 'block';
-                userAvatar.textContent = currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U';
+                
+                const initial = currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U';
+                
+                // Agregar badge de verificación si el email está verificado
+                if (currentUser.emailVerified) {
+                    userAvatar.innerHTML = initial + '<i class="fas fa-check-circle" style="position: absolute; bottom: -2px; right: -2px; font-size: 0.8rem; background: white; border-radius: 50%; color: #10b981;"></i>';
+                } else {
+                    userAvatar.textContent = initial;
+                }
             } else {
                 authButtons.style.display = 'flex';
                 userMenu.style.display = 'none';
@@ -1187,11 +1380,18 @@
                 return;
             }
 
+            // VERIFICAR QUE EL EMAIL ESTÉ VERIFICADO
+            if (!currentUser.emailVerified) {
+                showAlert('reviewAlert', '⚠️ Debes verificar tu email antes de dejar una reseña. Revisa tu bandeja de entrada.', 'error');
+                return;
+            }
+
             const rating = parseInt(document.getElementById('reviewRating').value);
             const text = document.getElementById('reviewText').value.trim();
 
-            if (text.length < 20) {
-                showAlert('reviewAlert', 'La reseña debe tener al menos 20 caracteres', 'error');
+            // Validación mínima (al menos algo de texto)
+            if (text.length < 5) {
+                showAlert('reviewAlert', 'La reseña debe tener al menos 5 caracteres', 'error');
                 return;
             }
 
